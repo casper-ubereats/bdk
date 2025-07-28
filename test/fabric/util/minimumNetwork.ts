@@ -105,7 +105,7 @@ export default class MinimumNetwork {
   public async createChannelAndJoin () {
     await this.channelServiceOrg0Peer.create({
       channelName: this.channelName,
-      orgNames: [this.getPeer().orgName, this.getPeer(1, 0).orgName],
+      orgNames: [this.getPeer().orgName],
       channelAdminPolicy: { type: PolicyTypeEnum.IMPLICITMETA, value: 'ANY Admins' },
       lifecycleEndorsement: { type: PolicyTypeEnum.IMPLICITMETA, value: 'ANY Endorsement' },
       endorsement: { type: PolicyTypeEnum.IMPLICITMETA, value: 'ANY Endorsement' },
