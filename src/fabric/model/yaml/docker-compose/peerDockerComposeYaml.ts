@@ -9,6 +9,7 @@ class PeerDockerComposeYaml extends DockerComposeYaml {
     this.addService(containerName, {
       container_name: containerName,
       image: `hyperledger/fabric-peer:${config.fabricVersion.peer}`,
+      user: '1001:128', // run the container as a user
       environment: [
         // Generic peer variables
         'CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock',
@@ -48,6 +49,8 @@ class PeerDockerComposeYaml extends DockerComposeYaml {
         `\${BDK_DOCKER_HOST_PATH:-~/.bdk/fabric}/${config.networkName}/peerOrganizations/${domain}/peers/peer${number}.${domain}/msp:/etc/hyperledger/fabric/msp`,
         `\${BDK_DOCKER_HOST_PATH:-~/.bdk/fabric}/${config.networkName}/peerOrganizations/${domain}/peers/peer${number}.${domain}/tls:/etc/hyperledger/fabric/tls`,
         `${containerName}:/var/hyperledger/production`,
+        `\${BDK_DOCKER_HOST_PATH:-~/.bdk/fabric}/${config.networkName}/channel-artifacts/peer${number}.${domain}:/var/hyperledger/production`,
+        // `\${BDK_DOCKER_HOST_PATH:-~/.bdk/fabric}/${config.networkName}/peerOrganizations/${domain}:/tmp/peerOrganizations/${domain}`,
       ],
       networks: [config.networkName],
       ports: ((isPublishPort ? [port] : []).concat(isPublishOperationPort ? [operationPort] : [])).filter(x => x !== 0).map(x => `${x}:${x}`),
