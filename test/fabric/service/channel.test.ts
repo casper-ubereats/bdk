@@ -830,7 +830,9 @@ describe('Channel service:', function () {
 
   describe('snapshot operations', () => {
     let channelName: string
-    const testSnapshotPath = `${config.infraConfig.bdkPath}/${config.networkName}/peerOrganizations/org0.bdk.example.com/peers/peer0.org0.bdk.example.com/snapshots/completed/test-channel/1/`
+    const testSnapshotPath1 = `${config.infraConfig.bdkPath}/${config.networkName}/peerOrganizations/org0.bdk.example.com/peers/peer0.org0.bdk.example.com/snapshots/completed/test-channel/0/`
+    const testSnapshotPath2 = `${config.infraConfig.bdkPath}/${config.networkName}/peerOrganizations/org0.bdk.example.com/peers/peer0.org0.bdk.example.com/snapshots/completed/test-channel/1/`
+    const testSnapshotPath = fs.existsSync(testSnapshotPath1) ? testSnapshotPath1 : testSnapshotPath2
 
     before(async () => {
       await minimumNetwork.createNetwork()
