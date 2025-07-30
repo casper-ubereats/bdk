@@ -832,7 +832,8 @@ describe('Channel service:', function () {
     let channelName: string
     const testSnapshotPath1 = `${config.infraConfig.bdkPath}/${config.networkName}/peerOrganizations/org0.bdk.example.com/peers/peer0.org0.bdk.example.com/snapshots/completed/test-channel/0/`
     const testSnapshotPath2 = `${config.infraConfig.bdkPath}/${config.networkName}/peerOrganizations/org0.bdk.example.com/peers/peer0.org0.bdk.example.com/snapshots/completed/test-channel/1/`
-    const testSnapshotPath = fs.existsSync(testSnapshotPath1) ? testSnapshotPath1 : testSnapshotPath2
+    const testSnapshotPath3 = `${config.infraConfig.bdkPath}/${config.networkName}/peerOrganizations/org0.bdk.example.com/peers/peer0.org0.bdk.example.com/snapshots/completed/test-channel/2/`
+    let testSnapshotPath = ''
 
     before(async () => {
       await minimumNetwork.createNetwork()
@@ -922,6 +923,19 @@ describe('Channel service:', function () {
         process.env.BDK_ORG_DOMAIN = minimumNetwork.getPeer(1, 0).orgDomain
         process.env.PEER_ADDRESS = `${minimumNetwork.getPeer(1, 0).hostname}.${minimumNetwork.getPeer(1, 0).orgDomain}:8051`
         process.env.BDK_ORG_NAME = minimumNetwork.getPeer(1, 0).orgName
+
+        if (fs.existsSync(testSnapshotPath1)) {
+          console.log('testSnapshotPath: 0')
+          testSnapshotPath = testSnapshotPath1
+        } else if (fs.existsSync(testSnapshotPath2)) {
+          console.log('testSnapshotPath: 1')
+          testSnapshotPath = testSnapshotPath2
+        } else if (fs.existsSync(testSnapshotPath3)) {
+          console.log('testSnapshotPath: 2')
+          testSnapshotPath = testSnapshotPath3
+        } else {
+          console.log('testSnapshotPath not found')
+        }
 
         await channelServiceOrg1Peer.joinBySnapshot({
           snapshotPath: testSnapshotPath,
