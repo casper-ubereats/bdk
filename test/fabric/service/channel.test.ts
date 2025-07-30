@@ -830,7 +830,7 @@ describe('Channel service:', function () {
 
   describe('snapshot operations', () => {
     let channelName: string
-    const testSnapshotPath = '/Users/casper/Desktop/bdk-3.4.0/bdk/test/bdk/bdk-fabric-network/peerOrganizations/org0.bdk.example.com/peers/peer0.org0.bdk.example.com/snapshots/completed/test-channel/1/'
+    const testSnapshotPath = `${config.infraConfig.bdkPath}/${config.networkName}/peerOrganizations/org0.bdk.example.com/peers/peer0.org0.bdk.example.com/snapshots/completed/test-channel/1/`
 
     before(async () => {
       await minimumNetwork.createNetwork()
