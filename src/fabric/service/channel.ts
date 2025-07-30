@@ -449,13 +449,7 @@ export default class Channel extends AbstractService {
     const sourceContainerPath = '/var/hyperledger/production/snapshots/'
     const hostDestinationPath = `${this.config.infraConfig.bdkPath}/${this.config.networkName}/peerOrganizations/${this.config.orgDomainName}/peers/${this.config.hostname}.${this.config.orgDomainName}/`
     const copyCommand = `docker cp ${containerName}:${sourceContainerPath} ${hostDestinationPath}`
-    const { stdout, stderr } = await execPromise(copyCommand)
-    if (stderr) {
-      console.error(`[Snapshot Copy] Error during Docker CP: ${stderr}`)
-      // You might want to consider this a partial failure or re-throw
-    }
-    console.log(`[Snapshot Copy] Docker CP stdout: ${stdout}`)
-    console.log(`[Snapshot Copy] Successfully initiated snapshot copy to host: ${hostDestinationPath}`)
+    await execPromise(copyCommand)
     return result
   }
 
