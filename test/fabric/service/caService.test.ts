@@ -199,11 +199,7 @@ describe('Fabric.CA', function () {
 
   describe('Fabric.CA.enrollRCA', function () {
     after(() => {
-      try {
-        fs.rmSync(`${config.infraConfig.bdkPath}/${config.networkName}`, { recursive: true, force: true })
-      } catch (e) {
-        console.warn('Cleanup failed:', e)
-      }
+      fs.rmSync(`${config.infraConfig.bdkPath}/${config.networkName}`, { recursive: true })
     })
 
     it('up & down', async () => {
@@ -236,11 +232,7 @@ describe('Fabric.CA', function () {
 
     after(async () => {
       await caService.down({ caName: rcaArgv.basic.caName })
-      try {
-        fs.rmSync(`${config.infraConfig.bdkPath}/${config.networkName}`, { recursive: true, force: true })
-      } catch (e) {
-        console.warn('Cleanup failed:', e)
-      }
+      fs.rmSync(`${config.infraConfig.bdkPath}/${config.networkName}`, { recursive: true })
     })
 
     it('enroll client', async () => {
@@ -293,11 +285,7 @@ describe('Fabric.CA', function () {
     after(async () => {
       await caService.down({ caName: rcaArgv.basic.caName })
       await caService.down({ caName: icaArgv.basic.caName })
-      try {
-        fs.rmSync(`${config.infraConfig.bdkPath}/${config.networkName}`, { recursive: true, force: true })
-      } catch (e) {
-        console.warn('Cleanup failed:', e)
-      }
+      fs.rmSync(`${config.infraConfig.bdkPath}/${config.networkName}`, { recursive: true })
     })
 
     it('enroll && register orderer', async () => {
@@ -404,11 +392,7 @@ describe('Fabric.CA', function () {
     after(async () => {
       await caService.down({ caName: rcaArgv.basic.caName })
       await caService.down({ caName: icaArgv.basic.caName })
-      try {
-        fs.rmSync(`${config.infraConfig.bdkPath}/${config.networkName}`, { recursive: true, force: true })
-      } catch (e) {
-        console.warn('Cleanup failed:', e)
-      }
+      fs.rmSync(`${config.infraConfig.bdkPath}/${config.networkName}`, { recursive: true })
     })
 
     it('reenroll orderer ca', async () => {

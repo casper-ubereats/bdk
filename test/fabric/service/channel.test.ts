@@ -11,7 +11,6 @@ import { DockerResultType } from '../../../src/fabric/instance/infra/InfraRunner
 import Peer from '../../../src/fabric/service/peer'
 import Orderer from '../../../src/fabric/service/orderer'
 import Discover from '../../../src/fabric/service/discover'
-import { execSync } from 'child_process'
 
 describe('Channel service:', function () {
   this.timeout(60000)
@@ -20,7 +19,7 @@ describe('Channel service:', function () {
   let networkCreateJson: NetworkCreateType
   let channelService: Channel
   let channelServiceOrg0Peer: Channel
-  let channelServiceOrg1Peer: Channel
+  // let channelServiceOrg1Peer: Channel
   let channelServiceOrg0Orderer: Channel
   let peerService: Peer
   let ordererService: Orderer
@@ -30,7 +29,7 @@ describe('Channel service:', function () {
     networkCreateJson = JSON.parse(fs.readFileSync('./cicd/test_script/network-create-min.json').toString())
     channelService = new Channel(config)
     channelServiceOrg0Peer = new Channel(minimumNetwork.org0PeerConfig)
-    channelServiceOrg1Peer = new Channel(minimumNetwork.org1PeerConfig)
+    // channelServiceOrg1Peer = new Channel(minimumNetwork.org1PeerConfig)
     channelServiceOrg0Orderer = new Channel(minimumNetwork.org0OrdererConfig)
     peerService = new Peer(config)
     ordererService = new Orderer(config)

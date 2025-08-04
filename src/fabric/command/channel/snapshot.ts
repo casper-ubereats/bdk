@@ -4,8 +4,6 @@ import prompts from 'prompts'
 import config from '../../config'
 import { onCancel } from '../../../util'
 import { getChannelList } from '../../model/prompts/util'
-// import ora from 'ora'
-// import { stdout } from 'node:process'
 
 export const command = 'snapshot'
 
@@ -40,7 +38,6 @@ const operationChoices = [
 
 export const handler = async (argv: Arguments<OptType>) => {
   const channel = new Channel(config)
-  // const spinner = ora('FabricChannelSnapshot...').start()
   try {
     const { operation, interactive, channelName, block, snapshotPath } = argv
 
@@ -78,10 +75,8 @@ export const handler = async (argv: Arguments<OptType>) => {
       default:
         throw new Error('Unknown Operation Type!')
     }
-    // spinner.succeed(`Fabric Channel Snapshot ${operation} successfully!`)
   } catch (error) {
     console.log(error)
-    // spinner.fail(`Operation failed: ${error instanceof Error ? error.message : error}`)
     process.exit(1)
   }
 }

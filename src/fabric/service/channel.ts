@@ -443,7 +443,6 @@ export default class Channel extends AbstractService {
   public async submitSnapshotRequest (
     params: ChannelSubmitAndCancelSnapshotType,
   ): Promise<InfraRunnerResultType> {
-    // return await (new FabricInstance(this.config, this.infra)).submitSnapshotRequest(params.channelName,params.blockNumber)
     const result = await (new FabricInstance(this.config, this.infra)).submitSnapshotRequest(params.channelName, params.blockNumber)
     const containerName = `${this.config.hostname}.${this.config.orgDomainName}`
     const sourceContainerPath = '/var/hyperledger/production/snapshots/'
