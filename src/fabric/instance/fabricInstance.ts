@@ -402,7 +402,6 @@ export default class FabricInstance extends AbstractInstance {
     options?: OptionsType,
   ): Promise<InfraRunnerResultType> {
     // this.validateTLSCert();
-    // console.log(`${this.dockerPath}/tlsca/${process.env.BDK_HOSTNAME}.${process.env.BDK_ORG_DOMAIN}/ca.crt`)
     const result = await this.infraRunCommand(
       [
         'peer', 'snapshot', 'submitrequest',
@@ -448,7 +447,6 @@ export default class FabricInstance extends AbstractInstance {
     options?: OptionsType,
   ): Promise<InfraRunnerResultType> {
     // this.validateTLSCert();
-    console.log(`${this.dockerPath}/tlsca/${process.env.BDK_HOSTNAME}.${process.env.BDK_ORG_DOMAIN}/ca.crt`)
     return await this.infraRunCommand(
       [
         'peer', 'snapshot', 'cancelrequest',

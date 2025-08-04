@@ -852,19 +852,16 @@ describe('Channel service:', function () {
         process.env.BDK_ORG_DOMAIN = minimumNetwork.getPeer().orgDomain
         process.env.PEER_ADDRESS = `${minimumNetwork.getPeer().hostname}.${minimumNetwork.getPeer().orgDomain}:7051`
         process.env.BDK_ORG_NAME = minimumNetwork.getPeer().orgName
-        console.log('submitSnapshot: 0')
         await channelServiceOrg0Peer.submitSnapshotRequest({
           channelName,
           blockNumber: 0,
         })
 
-        console.log('submitSnapshot: 10')
         const result = await channelServiceOrg0Peer.submitSnapshotRequest({
           channelName,
           blockNumber: 10,
         })
 
-        console.log('result: ', result)
         assert.match('stdout' in result ? result.stdout : '', /Snapshot request submitted successfully/)
       })
     })
@@ -882,7 +879,6 @@ describe('Channel service:', function () {
         const result = await channelServiceOrg0Peer.listPendingSnapshots({
           channelName,
         })
-        // console.log(result)
         // check wheter the return contains the block number in submit request
         assert.match('stdout' in result ? result.stdout : '', /100/)
       })
@@ -911,7 +907,6 @@ describe('Channel service:', function () {
         const resultWithCancel = await channelServiceOrg0Peer.listPendingSnapshots({
           channelName,
         })
-        // console.log(resultWithCancel)
         // check whether the canceled request has been excluded in the listPending return
         assert.doesNotMatch('stdout' in resultWithCancel ? resultWithCancel.stdout : '', /30/)
       })
@@ -925,16 +920,12 @@ describe('Channel service:', function () {
         process.env.BDK_ORG_NAME = minimumNetwork.getPeer(1, 0).orgName
 
         if (fs.existsSync(testSnapshotPath1)) {
-          console.log('testSnapshotPath: 0')
           testSnapshotPath = testSnapshotPath1
         } else if (fs.existsSync(testSnapshotPath2)) {
-          console.log('testSnapshotPath: 1')
           testSnapshotPath = testSnapshotPath2
         } else if (fs.existsSync(testSnapshotPath3)) {
-          console.log('testSnapshotPath: 2')
           testSnapshotPath = testSnapshotPath3
         } else {
-          console.log('testSnapshotPath not found')
         }
 
         await channelServiceOrg1Peer.joinBySnapshot({
@@ -943,7 +934,6 @@ describe('Channel service:', function () {
         // execute "peer channel list" to check wheter the peer has joined the channel successfully
         const dockerPeerCommand = 'docker exec peer0.org1.bdk.example.com peer channel list'
         const result = execSync(dockerPeerCommand).toString()
-        // console.log(PeerChannelList)
         assert.match(result, /test-channel/)
       })
     })
