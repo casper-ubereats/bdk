@@ -305,17 +305,18 @@ describe('Channel service:', function () {
       })
 
       it('should update channel config', async () => {
-        process.env.BDK_ORG_NAME = 'Org0'
-        process.env.BDK_ORG_DOMAIN = 'org0.example.com'
-        process.env.BDK_HOSTNAME = 'peer0'
+        process.env.BDK_HOSTNAME = minimumNetwork.getPeer().hostname
+        process.env.BDK_ORG_DOMAIN = minimumNetwork.getPeer().orgDomain
+        process.env.PEER_ADDRESS = `${minimumNetwork.getPeer().hostname}.${minimumNetwork.getPeer().orgDomain}:7051`
+        process.env.BDK_ORG_NAME = minimumNetwork.getPeer().orgName
         await channelServiceOrg0Peer.updateAnchorPeerSteps().updateChannelConfig({
           channelName,
           orderer: minimumNetwork.getOrderer().fullUrl,
           port: minimumNetwork.getPeer().port,
         })
         const result = (await channelServiceOrg0Peer.getChannelGroup(channelName)).anchorPeer
-        console.log('update channel config result: ')
-        console.log(result)
+        // console.log('update channel config result: ')
+        // console.log(result)
         assert.deepStrictEqual(result, [`${minimumNetwork.getPeer().hostname}.${minimumNetwork.getPeer().orgDomain}:${minimumNetwork.getPeer().port}`])
       })
     })
@@ -475,9 +476,13 @@ describe('Channel service:', function () {
       })
 
       it('should decode fetched channel config', async () => {
+        process.env.BDK_HOSTNAME = minimumNetwork.getPeer().hostname
+        process.env.BDK_ORG_DOMAIN = minimumNetwork.getPeer().orgDomain
+        process.env.PEER_ADDRESS = `${minimumNetwork.getPeer().hostname}.${minimumNetwork.getPeer().orgDomain}:7051`
+        process.env.BDK_ORG_NAME = minimumNetwork.getPeer().orgName
         const decodeResult = await channelServiceOrg0Peer.getChannelGroupSteps().decodeFetchedChannelConfig(channelName)
-        console.log('decode fetched channel config: ')
-        console.log(decodeResult)
+        // console.log('decode fetched channel config: ')
+        // console.log(decodeResult)
         assert.deepStrictEqual(decodeResult, {
           anchorPeer: [`${minimumNetwork.getPeer().hostname}.${minimumNetwork.getPeer().orgDomain}:${minimumNetwork.getPeer().port}`],
           orderer: [minimumNetwork.getOrderer().fullUrl],
