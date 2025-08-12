@@ -85,7 +85,7 @@ async function runInteractiveMode (channel: Channel) {
   const { operation } = await prompts({
     type: 'select',
     name: 'operation',
-    message: 'Operation type',
+    message: 'What is the operation type?',
     choices: operationChoices,
   }, { onCancel })
 
@@ -95,12 +95,12 @@ async function runInteractiveMode (channel: Channel) {
         {
           type: 'text',
           name: 'channelName',
-          message: '輸入Channel名稱',
+          message: 'What is your channel name?',
         },
         {
           type: 'number',
           name: 'blockNumber',
-          message: '輸入區塊號碼',
+          message: 'What is the block number?',
         },
       ], { onCancel })
       const submitResult = await channel.submitSnapshotRequest(submitData)
@@ -111,7 +111,7 @@ async function runInteractiveMode (channel: Channel) {
       const listData = await prompts({
         type: 'text',
         name: 'channelName',
-        message: '輸入Channel名稱',
+        message: 'What is your channel name?',
       }, { onCancel })
       const listResult = await channel.listPendingSnapshots(listData)
       console.log('stdout' in listResult ? listResult.stdout.replace(/\r\n/g, '') : '')
@@ -122,12 +122,12 @@ async function runInteractiveMode (channel: Channel) {
         {
           type: 'text',
           name: 'channelName',
-          message: '輸入Channel名稱',
+          message: 'What is your channel name?',
         },
         {
           type: 'number',
           name: 'blockNumber',
-          message: '輸入區塊號碼',
+          message: 'What is the block number?',
           // validate: value => value > 0 || '必須大於0'
         },
       ], { onCancel })
@@ -139,7 +139,7 @@ async function runInteractiveMode (channel: Channel) {
       const joinData = await prompts({
         type: 'text',
         name: 'snapshotPath',
-        message: '輸入Snapshot路徑',
+        message: 'What is your snapshot path?',
       }, { onCancel })
       const joinResult = await channel.joinBySnapshot(joinData)
       console.log('stdout' in joinResult ? joinResult.stdout.replace(/\r\n/g, '') : '')

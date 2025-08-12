@@ -7,7 +7,7 @@ All notable changes to BDK project will be documented here.
 
 ### Features
 
-* Add snapshot command
+* Add 4 snapshot commands: submitSnapshot, listPending, cancelRequest, joinBySnapshot
 
 ### Fixes
 
