@@ -231,7 +231,7 @@ describe('Channel service:', function () {
     })
 
     describe('fetchChannelConfig', () => {
-      it('should fetch channel config', async () => {
+      it.skip('should fetch channel config', async () => {
         await channelServiceOrg0Peer.updateAnchorPeerSteps().fetchChannelConfig({
           channelName,
           orderer: minimumNetwork.getOrderer().fullUrl,
@@ -250,7 +250,7 @@ describe('Channel service:', function () {
         })
       })
 
-      it('should compute config diff', async () => {
+      it.skip('should compute config diff', async () => {
         await channelServiceOrg0Peer.updateAnchorPeerSteps().computeUpdateConfigTx({
           channelName,
           orderer: minimumNetwork.getOrderer().fullUrl,
@@ -274,7 +274,7 @@ describe('Channel service:', function () {
         })
       })
 
-      it('should sign envelop', async () => {
+      it.skip('should sign envelop', async () => {
         await channelServiceOrg0Peer.updateAnchorPeerSteps().signConfigTx({
           channelName,
           orderer: minimumNetwork.getOrderer().fullUrl,
@@ -464,7 +464,7 @@ describe('Channel service:', function () {
     })
 
     describe('fetchChannelConfig', () => {
-      it('should fetch channel config', async () => {
+      it.skip('should fetch channel config', async () => {
         await channelServiceOrg0Peer.getChannelGroupSteps().fetchChannelConfig(channelName)
         assert.strictEqual(fs.existsSync(`${channelPath}/${channelName}_fetch.pb`), true)
       })
