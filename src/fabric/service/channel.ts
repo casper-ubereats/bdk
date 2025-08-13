@@ -25,7 +25,6 @@ import { AbstractService, ParserType } from './Service.abstract'
 import { DockerResultType, InfraRunnerResultType } from '../instance/infra/InfraRunner.interface'
 import { ProcessError, SnapshotError } from '../../util'
 import fs from 'fs-extra'
-import os from 'os'
 import { exec } from 'child_process' // Import exec from child_process
 import { promisify } from 'util' // Import promisify to use exec with async/await
 
@@ -498,7 +497,7 @@ export default class Channel extends AbstractService {
       if (!fs.pathExistsSync(snapshotPath)) { fs.mkdirpSync(snapshotPath) }
       await fs.copy(`${params.snapshotPath}`, snapshotPath, { overwrite: true })
     } catch (e: any) {
-      throw new SnapshotError(`Failed to copy snapshot from '${homeDir}/${params.snapshotPath}' to '${snapshotPath}': ${e.message}`)
+      throw new SnapshotError(`Failed to copy snapshot from '${params.snapshotPath}' to '${snapshotPath}': ${e.message}`)
     }
 
     const dockerSnapshotPath = `/tmp/peerOrganizations/${this.config.orgDomainName}/peers/${this.config.hostname}.${this.config.orgDomainName}/snapshots/temp`
