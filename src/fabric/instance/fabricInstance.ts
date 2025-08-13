@@ -3,9 +3,6 @@ import { OrgTypeEnum } from '../model/type/config.type'
 import { InfraRunner, InfraRunnerResultType } from './infra/InfraRunner.interface'
 import { AbstractInstance } from './Instance.abstract'
 
-import path from 'path'
-import fs from 'fs-extra'
-
 interface OptionsType {
   tag?: string
   volumes?: string[]
