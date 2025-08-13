@@ -2,10 +2,8 @@ import { Argv, Arguments } from 'yargs'
 import Channel from '../../service/channel'
 import prompts from 'prompts'
 import config from '../../config'
-import { onCancel } from '../../../util'
+import { onCancel, ParamsError, ProcessError } from '../../../util'
 import { getChannelList } from '../../model/prompts/util'
-// import ora from 'ora'
-// import { stdout } from 'node:process'
 
 export const command = 'snapshot'
 
@@ -40,7 +38,6 @@ const operationChoices = [
 
 export const handler = async (argv: Arguments<OptType>) => {
   const channel = new Channel(config)
-  // const spinner = ora('FabricChannelSnapshot...').start()
   try {
     const { operation, interactive, channelName, block, snapshotPath } = argv
 
@@ -48,41 +45,38 @@ export const handler = async (argv: Arguments<OptType>) => {
       return await runInteractiveMode(channel)
     }
     if (!operation) {
-      throw new Error('Operation type is needed!')
+      throw new ParamsError('Operation type is needed!')
     }
     switch (operation) {
       case 'submit':
         if (!channelName || !block) {
-          throw new Error('Channel name and block number are needed!')
+          throw new ParamsError('Channel name and block number are needed!')
         }
         await channel.submitSnapshotRequest({ channelName: channelName, blockNumber: block })
         break
       case 'listPending':
         if (!channelName) {
-          throw new Error('Channel name is needed!')
+          throw new ParamsError('Channel name is needed!')
         }
         await channel.listPendingSnapshots({ channelName: channelName })
         break
       case 'cancel':
         if (!channelName || !block) {
-          throw new Error('Channel name and block name are needed!')
+          throw new ParamsError('Channel name and block name are needed!')
         }
         await channel.cancelSnapshotRequest({ channelName: channelName, blockNumber: block })
         break
       case 'join':
         if (!snapshotPath) {
-          throw new Error('Snapshot path is needed!')
+          throw new ParamsError('Snapshot path is needed!')
         }
         await channel.joinBySnapshot({ snapshotPath: snapshotPath })
         break
       default:
-        throw new Error('Unknown Operation Type!')
+        throw new ParamsError('Unknown Operation Type!')
     }
-    // spinner.succeed(`Fabric Channel Snapshot ${operation} successfully!`)
-  } catch (error) {
-    console.log(error)
-    // spinner.fail(`Operation failed: ${error instanceof Error ? error.message : error}`)
-    process.exit(1)
+  } catch (e: any) {
+    throw new ProcessError(`[x] Process Error: ${e.message}`)
   }
 }
 
@@ -90,7 +84,7 @@ async function runInteractiveMode (channel: Channel) {
   const { operation } = await prompts({
     type: 'select',
     name: 'operation',
-    message: 'Operation type',
+    message: 'What is the operation type?',
     choices: operationChoices,
   }, { onCancel })
 
@@ -100,12 +94,12 @@ async function runInteractiveMode (channel: Channel) {
         {
           type: 'text',
           name: 'channelName',
-          message: '輸入Channel名稱',
+          message: 'What is your channel name?',
         },
         {
           type: 'number',
           name: 'blockNumber',
-          message: '輸入區塊號碼',
+          message: 'What is the block number?',
         },
       ], { onCancel })
       const submitResult = await channel.submitSnapshotRequest(submitData)
@@ -116,7 +110,7 @@ async function runInteractiveMode (channel: Channel) {
       const listData = await prompts({
         type: 'text',
         name: 'channelName',
-        message: '輸入Channel名稱',
+        message: 'What is your channel name?',
       }, { onCancel })
       const listResult = await channel.listPendingSnapshots(listData)
       console.log('stdout' in listResult ? listResult.stdout.replace(/\r\n/g, '') : '')
@@ -127,12 +121,12 @@ async function runInteractiveMode (channel: Channel) {
         {
           type: 'text',
           name: 'channelName',
-          message: '輸入Channel名稱',
+          message: 'What is your channel name?',
         },
         {
           type: 'number',
           name: 'blockNumber',
-          message: '輸入區塊號碼',
+          message: 'What is the block number?',
           // validate: value => value > 0 || '必須大於0'
         },
       ], { onCancel })
@@ -144,7 +138,7 @@ async function runInteractiveMode (channel: Channel) {
       const joinData = await prompts({
         type: 'text',
         name: 'snapshotPath',
-        message: '輸入Snapshot路徑',
+        message: 'What is your snapshot path?',
       }, { onCancel })
       const joinResult = await channel.joinBySnapshot(joinData)
       console.log('stdout' in joinResult ? joinResult.stdout.replace(/\r\n/g, '') : '')

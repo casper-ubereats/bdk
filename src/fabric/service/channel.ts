@@ -23,7 +23,7 @@ import FabricTools from '../instance/fabricTools'
 import FabricInstance from '../instance/fabricInstance'
 import { AbstractService, ParserType } from './Service.abstract'
 import { DockerResultType, InfraRunnerResultType } from '../instance/infra/InfraRunner.interface'
-import { ProcessError } from '../../util'
+import { ProcessError, SnapshotError } from '../../util'
 import fs from 'fs-extra'
 import os from 'os'
 import { exec } from 'child_process' // Import exec from child_process
@@ -443,13 +443,21 @@ export default class Channel extends AbstractService {
   public async submitSnapshotRequest (
     params: ChannelSubmitAndCancelSnapshotType,
   ): Promise<InfraRunnerResultType> {
-    // return await (new FabricInstance(this.config, this.infra)).submitSnapshotRequest(params.channelName,params.blockNumber)
     const result = await (new FabricInstance(this.config, this.infra)).submitSnapshotRequest(params.channelName, params.blockNumber)
     const containerName = `${this.config.hostname}.${this.config.orgDomainName}`
     const sourceContainerPath = '/var/hyperledger/production/snapshots/'
     const hostDestinationPath = `${this.config.infraConfig.bdkPath}/${this.config.networkName}/peerOrganizations/${this.config.orgDomainName}/peers/${this.config.hostname}.${this.config.orgDomainName}/`
     const copyCommand = `docker cp ${containerName}:${sourceContainerPath} ${hostDestinationPath}`
-    await execPromise(copyCommand)
+    try {
+      const { stdout, stderr } = await execPromise(copyCommand)
+      if (stderr) {
+        throw new Error(`[Snapshot Copy] Error during Docker CP: ${stderr}`)
+      }
+      console.log(`[Snapshot Copy] Docker CP stdout: ${stdout}`)
+      console.log(`[Snapshot Copy] Successfully initiated snapshot copy to host: ${hostDestinationPath}`)
+    } catch (e: any) {
+      throw new SnapshotError(`Failed to copy snapshot from container: ${e.message}`)
+    }
     return result
   }
 
@@ -459,7 +467,11 @@ export default class Channel extends AbstractService {
   public async listPendingSnapshots (
     params: ChannelListPendingSnapshotType,
   ): Promise<InfraRunnerResultType> {
-    return await (new FabricInstance(this.config, this.infra)).listPendingSnapshots(params.channelName)
+    try {
+      return await (new FabricInstance(this.config, this.infra)).listPendingSnapshots(params.channelName)
+    } catch (e: any) {
+      throw new SnapshotError(`Failed to list pending snapshots for channel '${params.channelName}': ${e.message}`)
+    }
   }
 
   /**
@@ -468,7 +480,11 @@ export default class Channel extends AbstractService {
   public async cancelSnapshotRequest (
     params: ChannelSubmitAndCancelSnapshotType,
   ): Promise<InfraRunnerResultType> {
-    return await (new FabricInstance(this.config, this.infra)).cancelSnapshotRequest(params.channelName, params.blockNumber)
+    try {
+      return await (new FabricInstance(this.config, this.infra)).cancelSnapshotRequest(params.channelName, params.blockNumber)
+    } catch (e: any) {
+      throw new SnapshotError(`Failed to cancel snapshot request for channel '${params.channelName}' at block '${params.blockNumber}': ${e.message}`)
+    }
   }
 
   /**
@@ -478,9 +494,19 @@ export default class Channel extends AbstractService {
     params: ChannelJoinBySnapshotType,
   ): Promise<InfraRunnerResultType> {
     const snapshotPath = `${this.config.infraConfig.bdkPath}/${this.config.networkName}/peerOrganizations/${this.config.orgDomainName}/peers/${this.config.hostname}.${this.config.orgDomainName}/snapshots/temp`
-    if (!fs.pathExistsSync(snapshotPath)) { fs.mkdirpSync(snapshotPath) }
-    await fs.copy(`${params.snapshotPath}`, snapshotPath, { overwrite: true })
+    try {
+      if (!fs.pathExistsSync(snapshotPath)) { fs.mkdirpSync(snapshotPath) }
+      await fs.copy(`${params.snapshotPath}`, snapshotPath, { overwrite: true })
+    } catch (e: any) {
+      throw new SnapshotError(`Failed to copy snapshot from '${homeDir}/${params.snapshotPath}' to '${snapshotPath}': ${e.message}`)
+    }
+
     const dockerSnapshotPath = `/tmp/peerOrganizations/${this.config.orgDomainName}/peers/${this.config.hostname}.${this.config.orgDomainName}/snapshots/temp`
-    return await (new FabricInstance(this.config, this.infra)).joinBySnapshot(dockerSnapshotPath)
+
+    try {
+      return await (new FabricInstance(this.config, this.infra)).joinBySnapshot(dockerSnapshotPath)
+    } catch (e: any) {
+      throw new SnapshotError(`Failed to join channel by snapshot using path '${dockerSnapshotPath}': ${e.message}`)
+    }
   }
 }

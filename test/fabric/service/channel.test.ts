@@ -925,7 +925,6 @@ describe('Channel service:', function () {
           testSnapshotPath = testSnapshotPath2
         } else if (fs.existsSync(testSnapshotPath3)) {
           testSnapshotPath = testSnapshotPath3
-        } else {
         }
 
         await channelServiceOrg1Peer.joinBySnapshot({
