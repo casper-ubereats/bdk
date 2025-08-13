@@ -2,7 +2,7 @@ import { Argv, Arguments } from 'yargs'
 import Channel from '../../service/channel'
 import prompts from 'prompts'
 import config from '../../config'
-import { onCancel } from '../../../util'
+import { onCancel, ParamsError, ProcessError } from '../../../util'
 import { getChannelList } from '../../model/prompts/util'
 
 export const command = 'snapshot'
@@ -45,39 +45,38 @@ export const handler = async (argv: Arguments<OptType>) => {
       return await runInteractiveMode(channel)
     }
     if (!operation) {
-      throw new Error('Operation type is needed!')
+      throw new ParamsError('Operation type is needed!')
     }
     switch (operation) {
       case 'submit':
         if (!channelName || !block) {
-          throw new Error('Channel name and block number are needed!')
+          throw new ParamsError('Channel name and block number are needed!')
         }
         await channel.submitSnapshotRequest({ channelName: channelName, blockNumber: block })
         break
       case 'listPending':
         if (!channelName) {
-          throw new Error('Channel name is needed!')
+          throw new ParamsError('Channel name is needed!')
         }
         await channel.listPendingSnapshots({ channelName: channelName })
         break
       case 'cancel':
         if (!channelName || !block) {
-          throw new Error('Channel name and block name are needed!')
+          throw new ParamsError('Channel name and block name are needed!')
         }
         await channel.cancelSnapshotRequest({ channelName: channelName, blockNumber: block })
         break
       case 'join':
         if (!snapshotPath) {
-          throw new Error('Snapshot path is needed!')
+          throw new ParamsError('Snapshot path is needed!')
         }
         await channel.joinBySnapshot({ snapshotPath: snapshotPath })
         break
       default:
-        throw new Error('Unknown Operation Type!')
+        throw new ParamsError('Unknown Operation Type!')
     }
-  } catch (error) {
-    console.log(error)
-    process.exit(1)
+  } catch (e: any) {
+    throw new ProcessError(`[x] Process Error: ${e.message}`)
   }
 }
 

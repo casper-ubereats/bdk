@@ -23,7 +23,7 @@ import FabricTools from '../instance/fabricTools'
 import FabricInstance from '../instance/fabricInstance'
 import { AbstractService, ParserType } from './Service.abstract'
 import { DockerResultType, InfraRunnerResultType } from '../instance/infra/InfraRunner.interface'
-import { ProcessError } from '../../util'
+import { ProcessError, SnapshotError } from '../../util'
 import fs from 'fs-extra'
 import os from 'os'
 import { exec } from 'child_process' // Import exec from child_process
@@ -455,8 +455,8 @@ export default class Channel extends AbstractService {
       }
       console.log(`[Snapshot Copy] Docker CP stdout: ${stdout}`)
       console.log(`[Snapshot Copy] Successfully initiated snapshot copy to host: ${hostDestinationPath}`)
-    } catch (error) {
-      throw new Error(`Failed to copy snapshot from container: ${error}`)
+    } catch (e: any) {
+      throw new SnapshotError(`Failed to copy snapshot from container: ${e.message}`)
     }
     return result
   }
@@ -469,8 +469,8 @@ export default class Channel extends AbstractService {
   ): Promise<InfraRunnerResultType> {
     try {
       return await (new FabricInstance(this.config, this.infra)).listPendingSnapshots(params.channelName)
-    } catch (error) {
-      throw new Error(`Failed to list pending snapshots for channel '${params.channelName}': ${error}`)
+    } catch (e: any) {
+      throw new SnapshotError(`Failed to list pending snapshots for channel '${params.channelName}': ${e.message}`)
     }
   }
 
@@ -482,8 +482,8 @@ export default class Channel extends AbstractService {
   ): Promise<InfraRunnerResultType> {
     try {
       return await (new FabricInstance(this.config, this.infra)).cancelSnapshotRequest(params.channelName, params.blockNumber)
-    } catch (error) {
-      throw new Error(`Failed to cancel snapshot request for channel '${params.channelName}' at block '${params.blockNumber}': ${error}`)
+    } catch (e: any) {
+      throw new SnapshotError(`Failed to cancel snapshot request for channel '${params.channelName}' at block '${params.blockNumber}': ${e.message}`)
     }
   }
 
@@ -500,16 +500,16 @@ export default class Channel extends AbstractService {
         fs.mkdirpSync(snapshotPath)
       }
       await fs.copy(`${homeDir}/${params.snapshotPath}`, snapshotPath, { overwrite: true })
-    } catch (error) {
-      throw new Error(`Failed to copy snapshot from '${homeDir}/${params.snapshotPath}' to '${snapshotPath}': ${error}`)
+    } catch (e: any) {
+      throw new SnapshotError(`Failed to copy snapshot from '${homeDir}/${params.snapshotPath}' to '${snapshotPath}': ${e.message}`)
     }
 
     const dockerSnapshotPath = `/tmp/peerOrganizations/${this.config.orgDomainName}/peers/${this.config.hostname}.${this.config.orgDomainName}/snapshots/temp`
 
     try {
       return await (new FabricInstance(this.config, this.infra)).joinBySnapshot(dockerSnapshotPath)
-    } catch (error) {
-      throw new Error(`Failed to join channel by snapshot using path '${dockerSnapshotPath}': ${error}`)
+    } catch (e: any) {
+      throw new SnapshotError(`Failed to join channel by snapshot using path '${dockerSnapshotPath}': ${e.message}`)
     }
   }
 }
