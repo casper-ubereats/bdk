@@ -40,7 +40,6 @@ export default class FabricInstance extends AbstractInstance {
     orderer: string,
     options?: OptionsType,
   ): Promise<InfraRunnerResultType> {
-    // console.log(`${this.dockerPath}/tlsca/${orderer.split(':')[0]}/ca.crt`)
     return await this.infraRunCommand(
       [
         'peer', 'channel', 'create',
