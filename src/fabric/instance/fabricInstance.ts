@@ -401,31 +401,26 @@ export default class FabricInstance extends AbstractInstance {
     blockNumber: number,
     options?: OptionsType,
   ): Promise<InfraRunnerResultType> {
-    // this.validateTLSCert();
-    console.log(`${this.dockerPath}/tlsca/${process.env.BDK_HOSTNAME}.${process.env.BDK_ORG_DOMAIN}/ca.crt`)
-    return await this.infraRunCommand(
+    const result = await this.infraRunCommand(
       [
         'peer', 'snapshot', 'submitrequest',
         '-c', channelName,
         '-b', blockNumber.toString(),
         '--peerAddress', `${process.env.PEER_ADDRESS}`,
-        // '--tlsRootCertFile', this.getDockerCertPath()
-        // '--tlsRootCertFile', `${this.dockerPath}/tlsca/${process.env.PEER_ADDRESS!.split(':')[0]}/ca.crt`
         '--tlsRootCertFile', `${this.dockerPath}/tlsca/${process.env.BDK_HOSTNAME}.${process.env.BDK_ORG_DOMAIN}/ca.crt`,
       ],
       OrgTypeEnum.PEER,
       undefined,
-      // [this.getTLSPathMapping()],
       undefined,
       options,
     )
+    return result
   }
 
   public async listPendingSnapshots (
     channelName: string,
     options?: OptionsType,
   ): Promise<InfraRunnerResultType> {
-    // this.validateTLSCert();
     return await this.infraRunCommand(
       [
         'peer', 'snapshot', 'listpending',
@@ -435,7 +430,6 @@ export default class FabricInstance extends AbstractInstance {
       ],
       OrgTypeEnum.PEER,
       undefined,
-      // [this.getTLSPathMapping()],
       undefined,
       options,
     )
@@ -446,8 +440,6 @@ export default class FabricInstance extends AbstractInstance {
     blockNumber: number,
     options?: OptionsType,
   ): Promise<InfraRunnerResultType> {
-    // this.validateTLSCert();
-    console.log(`${this.dockerPath}/tlsca/${process.env.BDK_HOSTNAME}.${process.env.BDK_ORG_DOMAIN}/ca.crt`)
     return await this.infraRunCommand(
       [
         'peer', 'snapshot', 'cancelrequest',
@@ -458,7 +450,6 @@ export default class FabricInstance extends AbstractInstance {
       ],
       OrgTypeEnum.PEER,
       undefined,
-      // [this.getTLSPathMapping()],
       undefined,
       options,
     )
@@ -468,7 +459,6 @@ export default class FabricInstance extends AbstractInstance {
     snapshotPath: string,
     options?: OptionsType,
   ): Promise<InfraRunnerResultType> {
-    // const dockerPath = `${this.dockerPath}/channel-artifacts/test/snapshots/${path.basename(snapshotPath)}`
     return await this.infraRunCommand(
       [
         'peer', 'channel', 'joinbysnapshot',
@@ -476,7 +466,6 @@ export default class FabricInstance extends AbstractInstance {
       ],
       OrgTypeEnum.PEER,
       undefined,
-      // [`${snapshotPath}:${dockerPath}`],
       undefined,
       options,
     )
