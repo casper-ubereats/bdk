@@ -700,7 +700,7 @@ bdk fabric channel approve -i
 
 ### Step 5：所有 Orgnew peer 加入 Channel
 
-Orgnew 的所有 peer 加入名稱為 *test* 的 Application Channel。由於加入 Application Channel 是以 Peer 單位加入，所以每個 peer 都需要單獨加入。
+Orgnew 的 peer0 加入名稱為 *test* 的 Application Channel。由於加入 Application Channel 是以 Peer 單位加入，所以每個 peer 都需要單獨加入。
 
 #### Peer0 加入頻道
 ```bash
@@ -714,27 +714,12 @@ bdk fabric channel join -i
 - test
 - orderer0.orderer.org0.example.com:7050
 
-#### Peer1 加入頻道
-```bash
-export BDK_ORG_NAME='Orgnew'
-export BDK_ORG_DOMAIN='orgnew.example.com'
-export BDK_HOSTNAME='peer1'
-
-bdk fabric channel join -i
-```
-選擇
-- test
-- orderer0.orderer.org0.example.com:7050
-
 #### 驗證所有 peer 都已成功加入頻道
 可以使用以下命令驗證每個 peer 都已加入頻道：
 
 ```bash
 # 檢查 peer0
 docker exec peer0.orgnew.example.com peer channel list
-
-# 檢查 peer1  
-docker exec peer1.orgnew.example.com peer channel list
 ```
 
 ### Step 6：Orgnew 部署 Chaincode
@@ -805,33 +790,6 @@ bdk fabric chaincode query -i
 - fabcar
 - QueryCar
 - CAR_ORGNEW_PEER0
-```bash
-export BDK_ORG_NAME='Orgnew'
-export BDK_ORG_DOMAIN='orgnew.example.com'
-export BDK_HOSTNAME='peer1'
-
-# 發起交易
-bdk fabric chaincode invoke -i
-```
-選擇
-- test
-- fabcar
-- CreateCar
-- CAR_ORGNEW_PEER1, BMW, X6, blue, Orgnew
-- false
-- Yes
-- orderer0.orderer.org0.example.com:7050
-- Yes
-- all
-```bash
-# 查詢資訊
-bdk fabric chaincode query -i
-```
-選擇
-- test
-- fabcar
-- QueryCar
-- CAR_ORGNEW_PEER1
 
 ### 常見問題與故障排除
 
@@ -989,10 +947,11 @@ bdk fabric channel snapshot -i
 ### Step 4 : 用 joinBySnapshot 將新的 peer 加入 channel
 
 ```bash
-export BDK_ORG_NAME='Org1'
-export BDK_ORG_DOMAIN='org1.example.com'
-export BDK_HOSTNAME='peer0'
-export PEER_ADDRESS=peer0.org1.example.com:8051
+# 將 Orgnew 中的 peer1 透過 snapshot 加入 Channel 內 (channel name: test)
+export BDK_ORG_NAME='Orgnew'
+export BDK_ORG_DOMAIN='orgnew.example.com'
+export BDK_HOSTNAME='peer1'
+export PEER_ADDRESS=peer1.orgnew.example.com:7051
 
 bdk fabric channel snapshot -i
 ```

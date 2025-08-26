@@ -710,7 +710,7 @@ choose system-channel
 
 ### Step 5：All Orgnew peers join Channel
 
-All Orgnew peers join the Application Channel named *test*. Since joining the Application Channel is done on a per-peer basis, each peer needs to join individually.
+peer 0 in Orgnew join the Application Channel named *test*. Since joining the Application Channel is done on a per-peer basis, each peer needs to join individually.
 
 #### Peer0 joins the channel
 ```bash
@@ -724,27 +724,12 @@ choose
 - test
 - orderer0.orderer.org0.example.com:7050
 
-#### Peer1 joins the channel
-```bash
-export BDK_ORG_NAME='Orgnew'
-export BDK_ORG_DOMAIN='orgnew.example.com'
-export BDK_HOSTNAME='peer1'
-
-bdk fabric channel join -i
-```
-choose
-- test
-- orderer0.orderer.org0.example.com:7050
-
 #### Verify all peers have successfully joined the channel
 You can use the following commands to verify that each peer has joined the channel:
 
 ```bash
 # Check peer0
 docker exec peer0.orgnew.example.com peer channel list
-
-# Check peer1  
-docker exec peer1.orgnew.example.com peer channel list
 ```
 
 ### Step 6：Deploy chaincode on Orgnew
@@ -815,33 +800,6 @@ choose
 - fabcar
 - QueryCar
 - CAR_ORGNEW_PEER0
-```bash
-export BDK_ORG_NAME='Orgnew'
-export BDK_ORG_DOMAIN='orgnew.example.com'
-export BDK_HOSTNAME='peer1'
-
-# Initiate transaction
-bdk fabric chaincode invoke -i
-```
-choose
-- test
-- fabcar
-- CreateCar
-- CAR_ORGNEW_PEER1, BMW, X6, blue, Orgnew
-- false
-- Yes
-- orderer0.orderer.org0.example.com:7050
-- Yes
-- all
-```bash
-# Query information
-bdk fabric chaincode query -i
-```
-choose
-- test
-- fabcar
-- QueryCar
-- CAR_ORGNEW_PEER1
 
 ### Common Issues and Troubleshooting
 
@@ -1000,10 +958,11 @@ After deletion, run listPending again to verify the request has been removed.
 ### Step 4: Use `joinBySnapshot` to add the new peer to the channel
 
 ```bash
-export BDK_ORG_NAME='Org1'
-export BDK_ORG_DOMAIN='org1.example.com'
-export BDK_HOSTNAME='peer0'
-export PEER_ADDRESS=peer0.org1.example.com:8051
+# peer1 in Orgnew joins the channel using snapshot (channel name: test)
+export BDK_ORG_NAME='Orgnew'
+export BDK_ORG_DOMAIN='orgnew.example.com'
+export BDK_HOSTNAME='peer1'
+export PEER_ADDRESS=peer1.orgnew.example.com:7051
 
 bdk fabric channel snapshot -i
 ```
