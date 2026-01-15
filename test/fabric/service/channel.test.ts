@@ -304,13 +304,20 @@ describe('Channel service:', function () {
         })
       })
 
-      it.skip('should update channel config', async () => {
+      it('should update channel config', async () => {
+        process.env.BDK_HOSTNAME = minimumNetwork.getPeer().hostname
+        process.env.BDK_ORG_DOMAIN = minimumNetwork.getPeer().orgDomain
+        process.env.PEER_ADDRESS = `${minimumNetwork.getPeer().hostname}.${minimumNetwork.getPeer().orgDomain}:7051`
+        process.env.BDK_ORG_NAME = minimumNetwork.getPeer().orgName
         await channelServiceOrg0Peer.updateAnchorPeerSteps().updateChannelConfig({
           channelName,
           orderer: minimumNetwork.getOrderer().fullUrl,
           port: minimumNetwork.getPeer().port,
         })
-        assert.deepStrictEqual((await channelServiceOrg0Peer.getChannelGroup(channelName)).anchorPeer, [`${minimumNetwork.getPeer().hostname}.${minimumNetwork.getPeer().orgDomain}:${minimumNetwork.getPeer().port}`])
+        const result = (await channelServiceOrg0Peer.getChannelGroup(channelName)).anchorPeer
+        // console.log('update channel config result: ')
+        // console.log(result)
+        assert.deepStrictEqual(result, [`${minimumNetwork.getPeer().hostname}.${minimumNetwork.getPeer().orgDomain}:${minimumNetwork.getPeer().port}`])
       })
     })
   })
@@ -468,8 +475,14 @@ describe('Channel service:', function () {
         await channelServiceOrg0Peer.getChannelGroupSteps().fetchChannelConfig(channelName)
       })
 
-      it.skip('should decode fetched channel config', async () => {
+      it('should decode fetched channel config', async () => {
+        process.env.BDK_HOSTNAME = minimumNetwork.getPeer().hostname
+        process.env.BDK_ORG_DOMAIN = minimumNetwork.getPeer().orgDomain
+        process.env.PEER_ADDRESS = `${minimumNetwork.getPeer().hostname}.${minimumNetwork.getPeer().orgDomain}:7051`
+        process.env.BDK_ORG_NAME = minimumNetwork.getPeer().orgName
         const decodeResult = await channelServiceOrg0Peer.getChannelGroupSteps().decodeFetchedChannelConfig(channelName)
+        // console.log('decode fetched channel config: ')
+        // console.log(decodeResult)
         assert.deepStrictEqual(decodeResult, {
           anchorPeer: [`${minimumNetwork.getPeer().hostname}.${minimumNetwork.getPeer().orgDomain}:${minimumNetwork.getPeer().port}`],
           orderer: [minimumNetwork.getOrderer().fullUrl],
@@ -620,7 +633,7 @@ describe('Channel service:', function () {
       await minimumNetwork.deleteNetwork()
     })
 
-    it.skip('should update channel by envelope', async () => {
+    it('should update channel by envelope', async () => {
       await channelServiceOrg0Peer.update({
         channelName,
         orderer: minimumNetwork.getOrderer().fullUrl,
